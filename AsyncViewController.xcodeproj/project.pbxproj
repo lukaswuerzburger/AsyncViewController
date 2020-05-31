@@ -8,20 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		5390C27CC669D333A9003AAE /* Pods_AsyncViewController_Demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D2C2E251DB3B151B6FED0BB /* Pods_AsyncViewController_Demo.framework */; };
-		8A0DCB18246B21C6005B7829 /* AsyncViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DCB17246B21C6005B7829 /* AsyncViewControllerTests.swift */; };
+		8A0DCB18246B21C6005B7829 /* AsyncResultViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0DCB17246B21C6005B7829 /* AsyncResultViewControllerTests.swift */; };
 		8A0DCB1A246B21C6005B7829 /* AsyncViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC164FC2465894600BBC00D /* AsyncViewController.framework */; };
 		8A46380D2466E33B000B963F /* CustomLoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A46380C2466E33B000B963F /* CustomLoadingViewController.swift */; };
 		8A46380F2466E6EA000B963F /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A46380E2466E6EA000B963F /* LoadingViewController.swift */; };
-		8A4638102466E71B000B963F /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A46380E2466E6EA000B963F /* LoadingViewController.swift */; };
 		8A4638122466E74B000B963F /* LoadingAnimatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A4638112466E74B000B963F /* LoadingAnimatable.swift */; };
-		8A4638132466E7DA000B963F /* LoadingAnimatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A4638112466E74B000B963F /* LoadingAnimatable.swift */; };
 		8A4CE2BC246C76ED00179FE6 /* LoadingViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A4CE2BB246C76ED00179FE6 /* LoadingViewControllerTests.swift */; };
 		8A4CE2BE246C7E0900179FE6 /* NavigationItemOverridePolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A4CE2BD246C7E0900179FE6 /* NavigationItemOverridePolicyTests.swift */; };
+		8A5C12222483D223003544D1 /* AsyncViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A5C12212483D223003544D1 /* AsyncViewController.swift */; };
+		8A5C12242483DB33003544D1 /* AsyncViewController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC164FC2465894600BBC00D /* AsyncViewController.framework */; };
+		8A5C12252483DB33003544D1 /* AsyncViewController.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC164FC2465894600BBC00D /* AsyncViewController.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8A61829224686025004383B3 /* NavigationItemOverridePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A61829124686025004383B3 /* NavigationItemOverridePolicy.swift */; };
-		8A61829624686073004383B3 /* NavigationItemOverridePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A61829124686025004383B3 /* NavigationItemOverridePolicy.swift */; };
 		8AC165012465894600BBC00D /* AsyncViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AC164FF2465894600BBC00D /* AsyncViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8AC165092465899700BBC00D /* AsyncViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC165082465899700BBC00D /* AsyncViewController.swift */; };
-		8AC1655B2465957600BBC00D /* AsyncViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC165082465899700BBC00D /* AsyncViewController.swift */; };
+		8AC165092465899700BBC00D /* AsyncResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC165082465899700BBC00D /* AsyncResultViewController.swift */; };
 		8AC1655C2465957C00BBC00D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC165342465932400BBC00D /* AppDelegate.swift */; };
 		8AC1655D2465957C00BBC00D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC165372465932400BBC00D /* SceneDelegate.swift */; };
 		8AC1655E2465957C00BBC00D /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC165352465932400BBC00D /* MasterViewController.swift */; };
@@ -41,7 +40,28 @@
 			remoteGlobalIDString = 8AC164FB2465894600BBC00D;
 			remoteInfo = AsyncViewController;
 		};
+		8A5C12262483DB33003544D1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8AC164F32465894600BBC00D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8AC164FB2465894600BBC00D;
+			remoteInfo = AsyncViewController;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8A5C12282483DB33003544D1 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8A5C12252483DB33003544D1 /* AsyncViewController.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2D8C165F0517EB0949586609 /* Pods_AsyncViewController_AsyncViewControllerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AsyncViewController_AsyncViewControllerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -50,18 +70,19 @@
 		6D2C2E251DB3B151B6FED0BB /* Pods_AsyncViewController_Demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AsyncViewController_Demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8877A8C4ACC7F698C19F4096 /* Pods-AsyncViewController.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AsyncViewController.release.xcconfig"; path = "Target Support Files/Pods-AsyncViewController/Pods-AsyncViewController.release.xcconfig"; sourceTree = "<group>"; };
 		8A0DCB15246B21C6005B7829 /* AsyncViewControllerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsyncViewControllerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8A0DCB17246B21C6005B7829 /* AsyncViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncViewControllerTests.swift; sourceTree = "<group>"; };
+		8A0DCB17246B21C6005B7829 /* AsyncResultViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncResultViewControllerTests.swift; sourceTree = "<group>"; };
 		8A0DCB19246B21C6005B7829 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8A46380C2466E33B000B963F /* CustomLoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLoadingViewController.swift; sourceTree = "<group>"; };
 		8A46380E2466E6EA000B963F /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		8A4638112466E74B000B963F /* LoadingAnimatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingAnimatable.swift; sourceTree = "<group>"; };
 		8A4CE2BB246C76ED00179FE6 /* LoadingViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewControllerTests.swift; sourceTree = "<group>"; };
 		8A4CE2BD246C7E0900179FE6 /* NavigationItemOverridePolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationItemOverridePolicyTests.swift; sourceTree = "<group>"; };
+		8A5C12212483D223003544D1 /* AsyncViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncViewController.swift; sourceTree = "<group>"; };
 		8A61829124686025004383B3 /* NavigationItemOverridePolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationItemOverridePolicy.swift; sourceTree = "<group>"; };
 		8AC164FC2465894600BBC00D /* AsyncViewController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AsyncViewController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AC164FF2465894600BBC00D /* AsyncViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AsyncViewController.h; sourceTree = "<group>"; };
 		8AC165002465894600BBC00D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8AC165082465899700BBC00D /* AsyncViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncViewController.swift; sourceTree = "<group>"; };
+		8AC165082465899700BBC00D /* AsyncResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncResultViewController.swift; sourceTree = "<group>"; };
 		8AC1652F2465932400BBC00D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8AC165312465932400BBC00D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8AC165332465932400BBC00D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -99,6 +120,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A5C12242483DB33003544D1 /* AsyncViewController.framework in Frameworks */,
 				5390C27CC669D333A9003AAE /* Pods_AsyncViewController_Demo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -119,7 +141,7 @@
 		8A0DCB16246B21C6005B7829 /* AsyncViewControllerTests */ = {
 			isa = PBXGroup;
 			children = (
-				8A0DCB17246B21C6005B7829 /* AsyncViewControllerTests.swift */,
+				8A0DCB17246B21C6005B7829 /* AsyncResultViewControllerTests.swift */,
 				8A4CE2BB246C76ED00179FE6 /* LoadingViewControllerTests.swift */,
 				8A4CE2BD246C7E0900179FE6 /* NavigationItemOverridePolicyTests.swift */,
 				8A0DCB19246B21C6005B7829 /* Info.plist */,
@@ -161,7 +183,8 @@
 		8AC165072465898800BBC00D /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				8AC165082465899700BBC00D /* AsyncViewController.swift */,
+				8A5C12212483D223003544D1 /* AsyncViewController.swift */,
+				8AC165082465899700BBC00D /* AsyncResultViewController.swift */,
 				8A46380E2466E6EA000B963F /* LoadingViewController.swift */,
 				8A4638112466E74B000B963F /* LoadingAnimatable.swift */,
 				8A61829124686025004383B3 /* NavigationItemOverridePolicy.swift */,
@@ -276,10 +299,12 @@
 				8AC165412465937F00BBC00D /* Sources */,
 				8AC165422465937F00BBC00D /* Frameworks */,
 				8AC165432465937F00BBC00D /* Resources */,
+				8A5C12282483DB33003544D1 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				8A5C12272483DB33003544D1 /* PBXTargetDependency */,
 			);
 			name = "AsyncViewController-Demo";
 			productName = "AsyncViewController-Demo";
@@ -449,7 +474,7 @@
 			files = (
 				8A4CE2BC246C76ED00179FE6 /* LoadingViewControllerTests.swift in Sources */,
 				8A4CE2BE246C7E0900179FE6 /* NavigationItemOverridePolicyTests.swift in Sources */,
-				8A0DCB18246B21C6005B7829 /* AsyncViewControllerTests.swift in Sources */,
+				8A0DCB18246B21C6005B7829 /* AsyncResultViewControllerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -459,8 +484,9 @@
 			files = (
 				8A61829224686025004383B3 /* NavigationItemOverridePolicy.swift in Sources */,
 				8A4638122466E74B000B963F /* LoadingAnimatable.swift in Sources */,
-				8AC165092465899700BBC00D /* AsyncViewController.swift in Sources */,
+				8AC165092465899700BBC00D /* AsyncResultViewController.swift in Sources */,
 				8A46380F2466E6EA000B963F /* LoadingViewController.swift in Sources */,
+				8A5C12222483D223003544D1 /* AsyncViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -468,14 +494,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A4638102466E71B000B963F /* LoadingViewController.swift in Sources */,
 				8AC1655E2465957C00BBC00D /* MasterViewController.swift in Sources */,
 				8AC1655C2465957C00BBC00D /* AppDelegate.swift in Sources */,
 				8A46380D2466E33B000B963F /* CustomLoadingViewController.swift in Sources */,
 				8AC165632465A91900BBC00D /* DetailViewController.swift in Sources */,
-				8AC1655B2465957600BBC00D /* AsyncViewController.swift in Sources */,
-				8A4638132466E7DA000B963F /* LoadingAnimatable.swift in Sources */,
-				8A61829624686073004383B3 /* NavigationItemOverridePolicy.swift in Sources */,
 				8AC1655D2465957C00BBC00D /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -487,6 +509,11 @@
 			isa = PBXTargetDependency;
 			target = 8AC164FB2465894600BBC00D /* AsyncViewController */;
 			targetProxy = 8A0DCB1B246B21C6005B7829 /* PBXContainerItemProxy */;
+		};
+		8A5C12272483DB33003544D1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8AC164FB2465894600BBC00D /* AsyncViewController */;
+			targetProxy = 8A5C12262483DB33003544D1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

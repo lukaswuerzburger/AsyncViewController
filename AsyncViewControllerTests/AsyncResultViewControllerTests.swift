@@ -1,5 +1,5 @@
 //
-//  AsyncViewControllerTests.swift
+//  AsyncResultViewControllerTests.swift
 //  AsyncViewControllerTests
 //
 //  Created by Lukas Würzburger on 12.05.20.
@@ -9,20 +9,26 @@
 import XCTest
 @testable import AsyncViewController
 
-class AsyncViewControllerTests: XCTestCase {
+class AsyncResultViewControllerTests: XCTestCase {
 
     enum MyError: Int, Error, Equatable {
         case loadingFailed
     }
 
-    class MockAsyncViewController: AsyncViewController<UIViewController, String, MyError> {
+    class MockAsyncViewController: AsyncResultViewController<UIViewController, String, MyError> {
 
         var didCallDidLoadViewController = false
+        var didCallDidSucceedLoading = false
         var didCallDidFailLoading = false
 
         override func didLoadViewController(_ viewController: UIViewController) {
             super.didLoadViewController(viewController)
             didCallDidLoadViewController = true
+        }
+
+        override func didSucceedLoading(_ viewController: UIViewController) {
+            super.didSucceedLoading(viewController)
+            didCallDidSucceedLoading = true
         }
 
         override func didFailLoading(_ error: MyError) {
@@ -34,10 +40,10 @@ class AsyncViewControllerTests: XCTestCase {
     // MARK: - Tests
 
     func testSetupDidAssignViewController() {
-        let asyncViewController = AsyncViewController(load: { _ in
+        let asyncViewController = AsyncResultViewController(load: { _ in
         }, success: { _ -> UIViewController in
             .init()
-        }, failure: { _ -> AsyncViewController<UIViewController, String, Error>.FailureResolution in
+        }, failure: { _ -> AsyncResultViewController<UIViewController, String, Error>.FailureResolution in
             .showViewController(.init())
         })
         XCTAssertNotNil(asyncViewController)
@@ -45,7 +51,7 @@ class AsyncViewControllerTests: XCTestCase {
 
     func testExecutesLoadingClosureWhenViewDidLoad() {
         let expect = expectation(description: "Loading closure should be called")
-        let _: AsyncViewController<UIViewController, String, Error> = presentAsyncViewController(load: { _ in
+        let _: AsyncResultViewController<UIViewController, String, Error> = presentAsyncViewController(load: { _ in
             expect.fulfill()
         })
         wait(for: [expect], timeout: 1)
@@ -53,7 +59,7 @@ class AsyncViewControllerTests: XCTestCase {
 
     func testExecutesSuccessClosureWithResultOnSuccess() {
         let expect = expectation(description: "Success closure should be called")
-        let _: AsyncViewController<UIViewController, String, Error> = presentAsyncViewController(load: { callback in
+        let _: AsyncResultViewController<UIViewController, String, Error> = presentAsyncViewController(load: { callback in
             callback(.success("Hello"))
         }, success: { string -> UIViewController in
             XCTAssertEqual(string, "Hello")
@@ -67,7 +73,7 @@ class AsyncViewControllerTests: XCTestCase {
         let expect = expectation(description: "Failure closure should be called")
         presentAsyncViewController(load: { callback in
             callback(.failure(.loadingFailed))
-        }, failure: { error -> AsyncViewController<UIViewController, String, MyError>.FailureResolution in
+        }, failure: { error -> AsyncResultViewController<UIViewController, String, MyError>.FailureResolution in
             XCTAssertEqual(.loadingFailed, error)
             expect.fulfill()
             return .showViewController(.init())
@@ -83,7 +89,7 @@ class AsyncViewControllerTests: XCTestCase {
         viewController.navigationItem.leftBarButtonItem = leftBarButtonItem
         viewController.navigationItem.title = title
         viewController.navigationItem.rightBarButtonItem = rightBarButtonItem
-        let asyncViewController: AsyncViewController<UIViewController, String, Error> = presentAsyncViewController(load: { callback in
+        let asyncViewController: AsyncResultViewController<UIViewController, String, Error> = presentAsyncViewController(load: { callback in
             callback(.success("Hello"))
         }, success: { _ -> UIViewController in
             return viewController
@@ -112,18 +118,22 @@ class AsyncViewControllerTests: XCTestCase {
     func testSuccessLifeCycleHookGetsCalled() {
         let mock = presentMockAsyncViewController(result: .success("Hello"))
         XCTAssertTrue(mock.didCallDidLoadViewController)
+        XCTAssertTrue(mock.didCallDidSucceedLoading)
+        XCTAssertFalse(mock.didCallDidFailLoading)
     }
 
     func testFailureLifeCycleHookGetsCalled() {
         let mock = presentMockAsyncViewController(result: .failure(.loadingFailed))
+        XCTAssertTrue(mock.didCallDidLoadViewController)
         XCTAssertTrue(mock.didCallDidFailLoading)
+        XCTAssertFalse(mock.didCallDidSucceedLoading)
     }
 
     func testCustomFailureResolutionGetsCalled() {
         let expect = expectation(description: "Custom failure closure should be called")
         presentAsyncViewController(load: { callback in
             callback(.failure(MyError.loadingFailed))
-        }, failure: { _ -> AsyncViewController<UIViewController, String, MyError>.FailureResolution in
+        }, failure: { _ -> AsyncResultViewController<UIViewController, String, MyError>.FailureResolution in
             .custom { _ in
                 expect.fulfill()
             }
@@ -133,7 +143,7 @@ class AsyncViewControllerTests: XCTestCase {
 
     func testLoadingViewStartsLoading() {
         let expect = expectation(description: "Success closure should be called")
-        var asyncViewController: AsyncViewController<UIViewController, String, Error>!
+        var asyncViewController: AsyncResultViewController<UIViewController, String, Error>!
         asyncViewController = presentAsyncViewController(load: { callback in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 callback(.success("Hello"))
@@ -152,7 +162,7 @@ class AsyncViewControllerTests: XCTestCase {
 
     func testPresentsSuccessViewControllerOnSuccess() {
         let successViewController = UIViewController()
-        let asyncViewController: AsyncViewController<UIViewController, String, Error> = presentAsyncViewController(load: { callback in
+        let asyncViewController: AsyncResultViewController<UIViewController, String, Error> = presentAsyncViewController(load: { callback in
             callback(.success("Hallo"))
         }, success: { _ -> UIViewController in
             return successViewController
@@ -164,9 +174,9 @@ class AsyncViewControllerTests: XCTestCase {
 
     func testPresentsFailureViewControllerOnSuccess() {
         let errorViewController = UIViewController()
-        let asyncViewController: AsyncViewController<UIViewController, String, Error> = presentAsyncViewController(load: { callback in
+        let asyncViewController: AsyncResultViewController<UIViewController, String, Error> = presentAsyncViewController(load: { callback in
             callback(.failure(MyError.loadingFailed))
-        }, failure: { _ -> AsyncViewController<UIViewController, String, Error>.FailureResolution in
+        }, failure: { _ -> AsyncResultViewController<UIViewController, String, Error>.FailureResolution in
             .showViewController(errorViewController)
         })
         XCTAssertNil(asyncViewController.successViewController)
@@ -176,13 +186,13 @@ class AsyncViewControllerTests: XCTestCase {
 
     func testStateCycleWithSuccess() {
         let expect = expectation(description: "Success closure should be called")
-        var asyncViewController: AsyncViewController<UIViewController, String, Error>!
+        var asyncViewController: AsyncResultViewController<UIViewController, String, Error>!
         asyncViewController = presentAsyncViewController(load: { callback in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 callback(.success("Hello"))
             }
         }, success: { _ -> UIViewController in
-            XCTAssertEqual(asyncViewController.state, .succeeded)
+            XCTAssertEqual(asyncViewController.state, .finished)
             expect.fulfill()
             return .init()
         }, autoPresent: false)
@@ -195,13 +205,13 @@ class AsyncViewControllerTests: XCTestCase {
 
     func testStateCycleWithFailure() {
         let expect = expectation(description: "Success closure should be called")
-        var asyncViewController: AsyncViewController<UIViewController, String, MyError>!
+        var asyncViewController: AsyncResultViewController<UIViewController, String, MyError>!
         asyncViewController = presentAsyncViewController(load: { callback in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 callback(.failure(.loadingFailed))
             }
-        }, failure: { _ -> AsyncViewController<UIViewController, String, MyError>.FailureResolution in
-            XCTAssertEqual(asyncViewController.state, .failed)
+        }, failure: { _ -> AsyncResultViewController<UIViewController, String, MyError>.FailureResolution in
+            XCTAssertEqual(asyncViewController.state, .finished)
             expect.fulfill()
             return .showViewController(.init())
         }, autoPresent: false)
@@ -214,12 +224,12 @@ class AsyncViewControllerTests: XCTestCase {
 
     // MARK: - Helper
 
-    @discardableResult func presentAsyncViewController<T, E>(load: @escaping (@escaping (Result<T, E>) -> Void) -> Void, success: ((T) -> UIViewController)? = nil, failure: ((E) -> AsyncViewController<UIViewController, T, E>.FailureResolution)? = nil, autoPresent: Bool = true) -> AsyncViewController<UIViewController, T, E> {
-        let asyncViewController = AsyncViewController(load: { callback in
+    @discardableResult func presentAsyncViewController<T, E>(load: @escaping (@escaping (Result<T, E>) -> Void) -> Void, success: ((T) -> UIViewController)? = nil, failure: ((E) -> AsyncResultViewController<UIViewController, T, E>.FailureResolution)? = nil, autoPresent: Bool = true) -> AsyncResultViewController<UIViewController, T, E> {
+        let asyncViewController = AsyncResultViewController(load: { callback in
             load(callback)
         }, success: { object -> UIViewController in
             return success?(object) ?? .init()
-        }, failure: { error -> AsyncViewController<UIViewController, T, E>.FailureResolution in
+        }, failure: { error -> AsyncResultViewController<UIViewController, T, E>.FailureResolution in
             return failure?(error) ?? .showViewController(.init())
         })
         if autoPresent {

@@ -7,100 +7,87 @@
 //
 
 import UIKit
+import AsyncViewController
+
+struct Example {
+    var title: String
+    var action: () -> Void
+}
 
 class MasterViewController: UITableViewController {
 
+    var examples: [Example] = []
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        examples = [
+            .init(title: "🎉 Success Push") { self.presentSuccessPush() },
+            .init(title: "🎉 Success Modal") { self.presentSuccessModal() },
+            .init(title: "⚠️ Failure Push") { self.presentFailurePush() },
+            .init(title: "⚠️ Failure Modal") { self.presentFailureModal() },
+            .init(title: "⚠️ Failure Push (Auto Dismiss + Alert)") { self.presentFailurePush(autoDismiss: true) },
+            .init(title: "⚠️ Failure Modal (Auto Dismiss + Alert)") { self.presentFailureModal(autoDismiss: true) },
+            .init(title: "🌈 Custom Loading Animation") { self.presentCustomAnimation() },
+            .init(title: "🧭 Navigation Item Override") { self.presentNavigationOverride() },
+            .init(title: "🧭 Custom Navigation Item Override") { self.presentCustomNavigationOverride() },
+            .init(title: "✅ Unfailable Async Task") { self.presentUnfailableAsyncTask() }
+
+        ]
+
         clearsSelectionOnViewWillAppear = true
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 9
+        return examples.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        if indexPath.row == 0 {
-            cell.textLabel!.text = "🎉 Success Push"
-        } else if indexPath.row == 1 {
-            cell.textLabel!.text = "🎉 Success Modal"
-        } else if indexPath.row == 2 {
-            cell.textLabel!.text = "⚠️ Failure Push"
-        } else if indexPath.row == 3 {
-            cell.textLabel!.text = "⚠️ Failure Modal"
-        } else if indexPath.row == 4 {
-            cell.textLabel!.text = "⚠️ Failure Push (Auto Dismiss + Alert)"
-        } else if indexPath.row == 5 {
-            cell.textLabel!.text = "⚠️ Failure Modal (Auto Dismiss + Alert)"
-        } else if indexPath.row == 6 {
-            cell.textLabel!.text = "🌈 Custom Loading Animation"
-        } else if indexPath.row == 7 {
-            cell.textLabel!.text = "🧭 Navigation Item Override"
-        } else if indexPath.row == 8 {
-            cell.textLabel!.text = "🧭 Custom Navigation Item Override"
-        }
+        cell.textLabel!.text = examples[indexPath.row].title
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 0 {
-            presentSuccessPush()
-        } else if indexPath.row == 1 {
-            presentSuccessModal()
-        } else if indexPath.row == 2 {
-            presentFailurePush()
-        } else if indexPath.row == 3 {
-            presentFailureModal()
-        } else if indexPath.row == 4 {
-            presentFailurePush(autoDismiss: true)
-        } else if indexPath.row == 5 {
-            presentFailureModal(autoDismiss: true)
-        } else if indexPath.row == 6 {
-            presentCustomAnimation()
-        } else if indexPath.row == 7 {
-            presentNavigationOverride()
-        } else if indexPath.row == 8 {
-            presentCustomNavigationOverride()
-        }
+        examples[indexPath.row].action()
     }
 
     // MARK: - Helper
 
-    func successViewController() -> AsyncViewController<UIViewController, String, Error> {
-        let viewController = AsyncViewController(load: { callback in
+    func successViewController() -> AsyncResultViewController<UIViewController, String, Error> {
+        let viewController = AsyncResultViewController(load: { callback in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 callback(.success("It worked 🎉"))
             }
         }, success: { string -> UIViewController in
             return self.viewController(title: string)
-        }, failure: { error -> AsyncViewController<UIViewController, String, Error>.FailureResolution in
+        }, failure: { error -> AsyncResultViewController<UIViewController, String, Error>.FailureResolution in
             return .showViewController(self.errorViewController(error: error))
         })
         return viewController
     }
 
-    func failureViewController(_ failureBlock: @escaping (Error) -> AsyncViewController<UIViewController, String, Error>.FailureResolution) -> UIViewController {
-        let viewController = AsyncViewController(load: { callback in
+    func failureViewController(_ failureBlock: @escaping (Error) -> AsyncResultViewController<UIViewController, String, Error>.FailureResolution) -> UIViewController {
+        let viewController = AsyncResultViewController(load: { callback in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 callback(.failure(MyResponseError.notFound))
             }
         }, success: { string -> UIViewController in
             return self.viewController(title: string)
-        }, failure: { error -> AsyncViewController<UIViewController, String, Error>.FailureResolution in
+        }, failure: { error -> AsyncResultViewController<UIViewController, String, Error>.FailureResolution in
             return failureBlock(error)
         })
         return viewController
     }
 
     func customAnimationViewController() -> UIViewController {
-        let viewController = AsyncViewController(load: { callback in
+        let viewController = AsyncResultViewController(load: { callback in
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 callback(.success("It worked 🎉"))
             }
         }, success: { string -> UIViewController in
             return self.viewController(title: string)
-        }, failure: { error -> AsyncViewController<UIViewController, String, Error>.FailureResolution in
+        }, failure: { error -> AsyncResultViewController<UIViewController, String, Error>.FailureResolution in
             return .showViewController(self.errorViewController(error: error))
         })
         viewController.loadingViewController = CustomLoadingViewController()
@@ -170,6 +157,20 @@ class MasterViewController: UITableViewController {
         viewController.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)]
         viewController.navigationItemOverridePolicy = .rightBarButtonItems
         navigationController?.pushViewController(viewController, animated: true)
+    }
+
+    func presentUnfailableAsyncTask() {
+        let viewController = AsyncViewController(load: { callback in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                callback("Always success!")
+            }
+        }, build: { string in
+            let viewController = UIViewController()
+            viewController.title = string
+            return viewController
+        })
+        viewController.navigationItemOverridePolicy = .title
+        presentModalViewController(viewController: viewController)
     }
 
     func presentModalViewController(viewController: UIViewController) {
