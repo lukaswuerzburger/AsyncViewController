@@ -2,30 +2,23 @@
 //  AsyncViewController.swift
 //  AsyncViewController
 //
-//  Created by Lukas Würzburger on 08.05.20.
+//  Created by Lukas Würzburger on 31.05.20.
 //  Copyright © 2020 Lukas Würzburger. All rights reserved.
 //
 
 import UIKit
 
-open class AsyncViewController<VC: UIViewController, T, E: Error>: UIViewController {
+open class AsyncViewController<T>: UIViewController {
 
     public enum State {
         case idle
         case loading
-        case succeeded
-        case failed
-    }
-
-    public enum FailureResolution {
-        case showViewController(UIViewController)
-        case custom((AsyncViewController<VC, T, E>) -> Void)
+        case finished
     }
 
     // MARK: - UI Elements
 
     public var loadingViewController: LoadingAnimatable = LoadingViewController()
-    private(set) public var successViewController: VC?
     private var destinationViewController: UIViewController?
 
     // MARK: - Variables
@@ -34,20 +27,17 @@ open class AsyncViewController<VC: UIViewController, T, E: Error>: UIViewControl
     public var fadesInResultingViewAfterLoading: Bool = true
     public var state: State = .idle
 
-    private var loadClosure: (@escaping (Result<T, E>) -> Void) -> Void
-    private var successClosure: (T) -> VC
-    private var failureClosure: (E) -> FailureResolution
+    private var loadClosure: (@escaping (T) -> Void) -> Void
+    private var buildClosure: (T) -> UIViewController?
 
     // MARK: - Initializer
 
-    required public init(
-        load: @escaping (@escaping (Result<T, E>) -> Void) -> Void,
-        success: @escaping (T) -> VC,
-        failure: @escaping (E) -> FailureResolution
+    public init(
+        load: @escaping (@escaping (T) -> Void) -> Void,
+        build: @escaping (T) -> UIViewController?
     ) {
         loadClosure = load
-        successClosure = success
-        failureClosure = failure
+        buildClosure = build
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -69,7 +59,7 @@ open class AsyncViewController<VC: UIViewController, T, E: Error>: UIViewControl
 
     // MARK: - View Helpers
 
-    private func addDestinationViewController(_ viewController: UIViewController) {
+    private func deployViewController(_ viewController: UIViewController) {
         destinationViewController = viewController
         addViewController(viewController)
         animateFadeInIfNeeded(for: viewController)
@@ -122,9 +112,7 @@ open class AsyncViewController<VC: UIViewController, T, E: Error>: UIViewControl
 
     // MARK: - Life Cycle Hooks
 
-    open func didLoadViewController(_ viewController: VC) {}
-
-    open func didFailLoading(_ error: E) {}
+    open func didLoadViewController(_ viewController: UIViewController) {}
 
     // MARK: - Networking
 
@@ -141,23 +129,11 @@ open class AsyncViewController<VC: UIViewController, T, E: Error>: UIViewControl
         }
     }
 
-    private func handleReload(result: Result<T, E>) {
-        switch result {
-        case .success(let model):
-            state = .succeeded
-            let viewController = successClosure(model)
-            successViewController = viewController
+    private func handleReload(result: T) {
+        state = .finished
+        if let viewController = buildClosure(result) {
             didLoadViewController(viewController)
-            addDestinationViewController(viewController)
-        case .failure(let error):
-            state = .failed
-            didFailLoading(error)
-            switch failureClosure(error) {
-            case .showViewController(let viewController):
-                addDestinationViewController(viewController)
-            case .custom(let customCallback):
-                customCallback(self)
-            }
+            deployViewController(viewController)
         }
     }
 }
